@@ -13,13 +13,11 @@ st.markdown(
             background-color: #121212;
             color: white;
         }
-        .css-1d391kg p, .st-bf, .st-cq, .st-dj, label {
+        .css-1d391kg p, .st-bf, .st-cq, .st-dj, label, .stButton > button {
             color: white !important;
         }
-        .stSlider, .stNumberInput {
+        .stSlider, .stNumberInput, .stTextInput {
             width: 100% !important;
-        }
-        input {
             background-color: #333 !important;
             color: white !important;
         }
@@ -60,15 +58,9 @@ tab1, tab2 = st.tabs(["📈 Monthly SIP", "💰 Lump Sum Investment"])
 
 with tab1:
     st.subheader("📈 Monthly SIP Calculator")
-    col1, col2 = st.columns([1, 2])
-    
-    with col1:
-        st.write("### Investment Inputs")
-    
-    with col2:
-        sip_amount = st.number_input("Enter Monthly SIP Amount (₹):", min_value=0, value=10000, step=1000, key="sip_amount")
-        sip_years = st.number_input("Enter Investment Duration (years):", min_value=1, value=10, step=1, key="sip_years")
-        sip_rate = st.slider("Select Expected Annual Return (%):", 1, 100, 10, key="sip_rate")  # Min set to 1%
+    sip_amount = st.number_input("Enter Monthly SIP Amount (₹):", min_value=0, value=10000, step=1000, key="sip_amount")
+    sip_years = st.number_input("Enter Investment Duration (years):", min_value=1, value=10, step=1, key="sip_years")
+    sip_rate = st.slider("Select Expected Annual Return (%):", 1, 100, 10, key="sip_rate")  # Min set to 1%
     
     sip_result = calculate_sip(sip_amount, sip_rate, sip_years)
     total_invested_sip = sip_amount * sip_years * 12
@@ -83,15 +75,9 @@ with tab1:
 
 with tab2:
     st.subheader("💰 Lump Sum Investment Calculator")
-    col1, col2 = st.columns([1, 2])
-    
-    with col1:
-        st.write("### Investment Inputs")
-    
-    with col2:
-        lumpsum_amount = st.number_input("Enter Lump Sum Amount (₹):", min_value=0, value=100000, step=5000, key="lumpsum_amount")
-        lumpsum_years = st.number_input("Enter Investment Duration (years):", min_value=1, value=10, step=1, key="lumpsum_years")
-        lumpsum_rate = st.slider("Select Expected Annual Return (%):", 1, 100, 10, key="lumpsum_rate")  # Min set to 1%
+    lumpsum_amount = st.number_input("Enter Lump Sum Amount (₹):", min_value=0, value=100000, step=5000, key="lumpsum_amount")
+    lumpsum_years = st.number_input("Enter Investment Duration (years):", min_value=1, value=10, step=1, key="lumpsum_years")
+    lumpsum_rate = st.slider("Select Expected Annual Return (%):", 1, 100, 10, key="lumpsum_rate")  # Min set to 1%
     
     lumpsum_result = calculate_lumpsum(lumpsum_amount, lumpsum_rate, lumpsum_years)
     total_profit_lumpsum = lumpsum_result - lumpsum_amount
@@ -106,7 +92,7 @@ with tab2:
 # Trivia Section with refresh button
 st.subheader("💡 Finance Trivia")
 trivia_placeholder = st.empty()
-if st.button("🔄 Refresh Trivia"):
+if st.button("🔄 Refresh Trivia", key="refresh_trivia"):
     trivia_placeholder.write(random.choice(finance_trivia))
 else:
     trivia_placeholder.write(random.choice(finance_trivia))
