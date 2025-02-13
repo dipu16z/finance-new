@@ -19,22 +19,26 @@ st.markdown(
         .stSlider, .stNumberInput {
             width: 100% !important;
         }
+        input {
+            background-color: #333 !important;
+            color: white !important;
+        }
     </style>
     """, unsafe_allow_html=True
 )
 
-# Finance trivia section
+# Finance trivia section with India-based trivia
 finance_trivia = [
     "The Rule of 72 is a simple way to estimate how long an investment will take to double given a fixed annual return.",
     "Warren Buffett bought his first stock at age 11.",
     "The New York Stock Exchange was founded in 1792.",
     "The highest stock market return in a single year was 50.3% (1954, S&P 500).",
     "Compound interest was called the 'eighth wonder of the world' by Albert Einstein.",
-    "The largest single-day stock market drop in history occurred on Black Monday, October 19, 1987.",
-    "Bitcoin was first introduced in 2009 by an anonymous person or group using the name Satoshi Nakamoto.",
-    "The first publicly traded company was the Dutch East India Company in 1602.",
-    "The US dollar is the most widely used reserve currency in the world.",
-    "Index funds often outperform actively managed funds over the long term.",
+    "The Bombay Stock Exchange (BSE) is Asia's oldest stock exchange, established in 1875.",
+    "The Reserve Bank of India (RBI) was established in 1935 to regulate India's financial system.",
+    "India's mutual fund industry started in 1963 with the establishment of Unit Trust of India (UTI).",
+    "The National Stock Exchange (NSE) was founded in 1992 and is the largest stock exchange in India.",
+    "The Indian rupee symbol (₹) was officially adopted in 2010.",
 ]
 
 # Functions for calculations
@@ -46,9 +50,6 @@ def calculate_sip(amount, rate, years):
     return amount * ((1 + rate) ** months - 1) / rate * (1 + rate)
 
 def calculate_lumpsum(amount, rate, years):
-    return amount * (1 + rate / 100) ** years
-
-def calculate_fd(amount, rate, years):
     return amount * (1 + rate / 100) ** years
 
 # UI Components
@@ -70,11 +71,15 @@ with tab1:
         sip_rate = st.slider("Select Expected Annual Return (%):", 1, 100, 10, key="sip_rate")  # Min set to 1%
     
     sip_result = calculate_sip(sip_amount, sip_rate, sip_years)
-    fd_result = calculate_fd(sip_amount, 5, sip_years)  # Assume 5% for FD
+    total_invested_sip = sip_amount * sip_years * 12
+    total_profit_sip = sip_result - total_invested_sip
+    total_profit_percent_sip = (total_profit_sip / total_invested_sip) * 100
     
     st.subheader("📊 SIP Returns")
+    st.write(f"**Total Invested:** ₹{total_invested_sip:,.2f}")
     st.write(f"**Final SIP Corpus:** ₹{sip_result:,.2f}")
-    st.write(f"**Fixed Deposit Returns (5% rate):** ₹{fd_result:,.2f}")
+    st.write(f"**Total Profit Earned:** ₹{total_profit_sip:,.2f}")
+    st.write(f"**Total Profit Percentage:** {total_profit_percent_sip:.2f}%")
 
 with tab2:
     st.subheader("💰 Lump Sum Investment Calculator")
@@ -89,14 +94,19 @@ with tab2:
         lumpsum_rate = st.slider("Select Expected Annual Return (%):", 1, 100, 10, key="lumpsum_rate")  # Min set to 1%
     
     lumpsum_result = calculate_lumpsum(lumpsum_amount, lumpsum_rate, lumpsum_years)
-    fd_lumpsum_result = calculate_fd(lumpsum_amount, 5, lumpsum_years)  # Assume 5% for FD
+    total_profit_lumpsum = lumpsum_result - lumpsum_amount
+    total_profit_percent_lumpsum = (total_profit_lumpsum / lumpsum_amount) * 100
     
     st.subheader("📊 Lump Sum Returns")
+    st.write(f"**Total Invested:** ₹{lumpsum_amount:,.2f}")
     st.write(f"**Final Lump Sum Corpus:** ₹{lumpsum_result:,.2f}")
-    st.write(f"**Fixed Deposit Returns (5% rate):** ₹{fd_lumpsum_result:,.2f}")
-    st.write(f"**Total Interest Earned:** ₹{lumpsum_result - lumpsum_amount:,.2f}")
-    st.write(f"**Total FD Interest Earned:** ₹{fd_lumpsum_result - lumpsum_amount:,.2f}")
+    st.write(f"**Total Profit Earned:** ₹{total_profit_lumpsum:,.2f}")
+    st.write(f"**Total Profit Percentage:** {total_profit_percent_lumpsum:.2f}%")
 
-# Trivia Section
+# Trivia Section with refresh button
 st.subheader("💡 Finance Trivia")
-st.write(random.choice(finance_trivia))
+trivia_placeholder = st.empty()
+if st.button("🔄 Refresh Trivia"):
+    trivia_placeholder.write(random.choice(finance_trivia))
+else:
+    trivia_placeholder.write(random.choice(finance_trivia))
