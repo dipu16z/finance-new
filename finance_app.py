@@ -13,8 +13,8 @@ st.markdown(
             background-color: #121212;
             color: white;
         }
-        .css-1d391kg p, .st-bf {
-            color: white;
+        .css-1d391kg p, .st-bf, .st-cq, .st-dj, label {
+            color: white !important;
         }
         .stSlider, .stNumberInput {
             width: 100% !important;
@@ -39,6 +39,8 @@ finance_trivia = [
 
 # Functions for calculations
 def calculate_sip(amount, rate, years):
+    if rate == 0:
+        return amount * years * 12  # Simple addition for 0% interest
     rate = rate / 100 / 12
     months = years * 12
     return amount * ((1 + rate) ** months - 1) / rate * (1 + rate)
@@ -63,12 +65,12 @@ with tab1:
         st.write("### Investment Inputs")
     
     with col2:
-        amount = st.number_input("Enter Monthly SIP Amount (₹):", min_value=0, value=10000, step=1000)
-        years = st.number_input("Enter Investment Duration (years):", min_value=1, value=10, step=1)
-        rate = st.slider("Select Expected Annual Return (%):", 0, 100, 10)
+        sip_amount = st.number_input("Enter Monthly SIP Amount (₹):", min_value=0, value=10000, step=1000, key="sip_amount")
+        sip_years = st.number_input("Enter Investment Duration (years):", min_value=1, value=10, step=1, key="sip_years")
+        sip_rate = st.slider("Select Expected Annual Return (%):", 1, 100, 10, key="sip_rate")  # Min set to 1%
     
-    sip_result = calculate_sip(amount, rate, years)
-    fd_result = calculate_fd(amount, 5, years)  # Assume 5% for FD
+    sip_result = calculate_sip(sip_amount, sip_rate, sip_years)
+    fd_result = calculate_fd(sip_amount, 5, sip_years)  # Assume 5% for FD
     
     st.subheader("📊 SIP Returns")
     st.write(f"**Final SIP Corpus:** ₹{sip_result:,.2f}")
@@ -82,9 +84,9 @@ with tab2:
         st.write("### Investment Inputs")
     
     with col2:
-        lumpsum_amount = st.number_input("Enter Lump Sum Amount (₹):", min_value=0, value=100000, step=5000)
-        lumpsum_years = st.number_input("Enter Investment Duration (years):", min_value=1, value=10, step=1)
-        lumpsum_rate = st.slider("Select Expected Annual Return (%):", 0, 100, 10)
+        lumpsum_amount = st.number_input("Enter Lump Sum Amount (₹):", min_value=0, value=100000, step=5000, key="lumpsum_amount")
+        lumpsum_years = st.number_input("Enter Investment Duration (years):", min_value=1, value=10, step=1, key="lumpsum_years")
+        lumpsum_rate = st.slider("Select Expected Annual Return (%):", 1, 100, 10, key="lumpsum_rate")  # Min set to 1%
     
     lumpsum_result = calculate_lumpsum(lumpsum_amount, lumpsum_rate, lumpsum_years)
     fd_lumpsum_result = calculate_fd(lumpsum_amount, 5, lumpsum_years)  # Assume 5% for FD
@@ -92,6 +94,8 @@ with tab2:
     st.subheader("📊 Lump Sum Returns")
     st.write(f"**Final Lump Sum Corpus:** ₹{lumpsum_result:,.2f}")
     st.write(f"**Fixed Deposit Returns (5% rate):** ₹{fd_lumpsum_result:,.2f}")
+    st.write(f"**Total Interest Earned:** ₹{lumpsum_result - lumpsum_amount:,.2f}")
+    st.write(f"**Total FD Interest Earned:** ₹{fd_lumpsum_result - lumpsum_amount:,.2f}")
 
 # Trivia Section
 st.subheader("💡 Finance Trivia")
